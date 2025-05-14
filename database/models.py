@@ -31,7 +31,7 @@ class UserAnswer(Base):
     user_answer = Column(Integer)
     # создание связей
     user_fk = relationship(User, lazy="subquery")
-    question_fk = relationship("Question", lazy="subquery")
+    question_fk = relationship("Questions", lazy="subquery")
 # таблица рейтинга
 class Rating(Base):
     __tablename__ = "rating"
