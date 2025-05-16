@@ -10,18 +10,20 @@ def add_user_db(username, phone_number):
         if not user:
             user = db.query(User).filter_by(phone_number=phone_number).first()
             # объединение 9 и 11 строчки через 1 запрос
-            # user = db.query(User).filter(User.username == username and User.phone_number == phone_number).first()
+            # user = db.query(User).filter(User.username == username, User.phone_number == phone_number).first()
             if not user:
                 user = User(username=username, phone_number=phone_number)
                 db.add(user)
                 db.commit()
                 db.refresh(user)
         return user.id
+
 # получение информации о юзере, либо о всех юзерах
 def get_users_info_db(user_id=0):
     with next(get_db()) as db:
         exact_user = db.query(User).all() if user_id == 0 else db.query(User).filter_by(id=user_id).first()
         return exact_user if exact_user else "Юзер не найден"
+
 # функция сохранения ответа + учёт рейтинга
 def add_answer_db(user_id, question_id, user_answer=0):
     with next(get_db()) as db:
@@ -32,7 +34,7 @@ def add_answer_db(user_id, question_id, user_answer=0):
         db.add(new_answer)
         db.commit()
         if exact_question.correct_answer == user_answer:
-            exact_rating = db.query(Rating).filter(Rating.user_id == user_id and Rating.level == exact_question.level).first()
+            exact_rating = db.query(Rating).filter(Rating.user_id == user_id, Rating.level == exact_question.level).first()
             if exact_rating:
                 exact_rating.correct_answers += 1
                 db.commit()
@@ -44,10 +46,3 @@ def add_answer_db(user_id, question_id, user_answer=0):
                 db.commit()
             return True
         return False
-
-
-
-
-
-
-
